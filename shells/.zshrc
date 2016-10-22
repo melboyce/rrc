@@ -33,7 +33,7 @@ WATCHFMT="%D %T %b%n%b %a %l from %m"
 DIRSTACKFILE=$cachedir/dirstack
 if [[ -f $DIRSTACKFILE ]]; then
 	dirstack=( ${(f)"$(< $DIRSTACKFILE)"} )
-	[[ -d $dirstack[1] ]] && cd $dirstack[1] && cs $OLDPWD
+	[[ -d $dirstack[1] ]] && cd $dirstack[1] && cd $OLDPWD
 fi
 chpwd() {
 	print -l $PWD ${(u)dirstack} >| $DIRSTACKFILE
@@ -159,7 +159,7 @@ zstyle ':completion:*:kill:*' menu yes select
 zstyle ':completion:*:kill:*:processes' list-colors "=(#b) #([0-9]#) #([a-z]#)*=37=31=33"
 
 # prompt
-rs="%{k%f%}"
+rs="%{%k%f%}"
 pathcolor="%{%F{166}%}"
 usercolor="%{%F{051}%}"
 sepcolor="%{%F{240}%}"
@@ -219,4 +219,4 @@ key[Menu]=''''
 [[ -n ${key[Backspace]} ]] && bindkey "${key[Backspace]}" backward-delete-char
 
 # done
-fotune -a
+fortune -a
