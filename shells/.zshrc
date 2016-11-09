@@ -2,14 +2,19 @@
 
 # vars
 browser="/usr/bin/lynx"
-editor="nvim"
-restricted_editor="nvim -Z"
-timezone="Australia/Melbourne"
+editor="vim"
 pager="most"
+tempdir=$HOME/tmp
+timezone="Australia/Melbourne"
+
+if [[ -x /usr/local/bin/kak ]]; then
+	editor=kak
+elif [[ -x /usr/bin/nvim ]]; then
+	editor=nvim
+fi
 
 
 # init
-TMP=$HOME/tmp
 hostname=`hostname`
 cachedir=~/.cache/zsh
 mkdir -p $cachedir $TMP
@@ -26,7 +31,7 @@ LISTMAX=0
 MAILCHECK=0
 REPORTTIME=10
 SAVEHIST=$HISTSIZE
-TMPPREFIX=$TMP
+TMPPREFIX=$tempdir/zsh
 WATCH="notme"
 WATCHFMT="%D %T %b%n%b %a %l from %m"
 
@@ -45,11 +50,10 @@ export EDITOR=$editor
 export GREP_COLOR=31
 export MANPATH="$MANPATH:/usr/share/man"
 export PAGER=$pager
-export SUDO_EDITOR=$resticted_editor
 export S_COLORS="always"
-export TEMP=$TMP
-export TMP=$TMP
-export TMPDIR=$TMP
+export TEMP=$tempdir
+export TMP=$tempdir
+export TMPDIR=$tempdir
 export TZ=$timezone
 export TIMEZONE=$timezone
 export VISUAL=$editor
@@ -176,18 +180,18 @@ RPROMPT="${exitprompt}"
 
 # functions
 px() { ps uwwp ${$(pgrep -d, "${(j:|:)@}"):?no matches} }
-hl() { egrep --color=always -e '' -e${^*} }
+pstop() { ps -eo pid,user,pri,ni,vsz,rsz,stat,pcpu,pmem,time,comm --sort -pcpu | head -11 }
 mkcd() { mkdir -p "$1" && cd "$1" }
 compdef mkcd=mkdir
-pstop() { ps -eo pid,user,pri,ni,vsz,rsz,stat,pcpu,pmem,time,comm --sort -pcpu | head -11 }
 
 # keyboard
 autoload zkbd
 typeset -g -A key
-key[F1]='^[[11~'
-key[F2]='^[[12~'
-key[F3]='^[[13~'
-key[F4]='^[[14~'
+
+key[F1]='^[OP'
+key[F2]='^[OQ'
+key[F3]='^[OR'
+key[F4]='^[OS'
 key[F5]='^[[15~'
 key[F6]='^[[17~'
 key[F7]='^[[18~'
@@ -197,17 +201,18 @@ key[F10]='^[[21~'
 key[F11]='^[[23~'
 key[F12]='^[[24~'
 key[Backspace]='^?'
-key[Insert]='^[[2~'
-key[Home]='^[[7~'
+key[Insert]='^[[4h'
+key[Home]='^[[H'
 key[PageUp]='^[[5~'
-key[Delete]='^[[3~'
-key[End]='^[[8~'
+key[Delete]='^[[P'
+key[End]='^[[4~'
 key[PageDown]='^[[6~'
 key[Up]='^[[A'
 key[Left]='^[[D'
 key[Down]='^[[B'
 key[Right]='^[[C'
 key[Menu]=''''
+
 [[ -n ${key[Left]}      ]] && bindkey "${key[Left]}"      backward-char
 [[ -n ${key[Right]}     ]] && bindkey "${key[Right]}"     forward-char
 [[ -n ${key[Up]}        ]] && bindkey "${key[Up]}"        up-line-or-history
